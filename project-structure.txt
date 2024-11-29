@@ -1,0 +1,34 @@
+project-root/
+├── config/
+│   └── db.js
+├── controllers/
+│   ├── authController.js
+│   ├── cartController.js
+│   ├── orderController.js
+│   └── productController.js
+├── middleware/
+│   └── auth.js
+├── models/
+│   ├── User.js
+│   ├── Product.js
+│   ├── Order.js
+│   └── Cart.js
+├── public/
+│   ├── css/
+│   └── js/
+├── routes/
+│   ├── authRoutes.js
+│   ├── cartRoutes.js
+│   ├── orderRoutes.js
+│   └── productRoutes.js
+├── views/
+│   ├── partials/
+│   │   ├── header.ejs
+│   │   └── footer.ejs
+│   ├── home.ejs
+│   ├── product.ejs
+│   ├── cart.ejs
+│   ├── order.ejs
+│   └── order-history.ejs
+├── package.json
+└── server.js

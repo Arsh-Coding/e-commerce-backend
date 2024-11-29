@@ -1,0 +1,17 @@
+E commerce platform backend made with node js no library and framework used other than express js. using mvc structure
+
+1. make home page with 10 products
+2. view page where description of each product is there 
+3. cart page can store data in local storage and backend if not login else data to be saved in database.
+4. buy-order page with payment integration only open when authorised or logged in
+5. (Order history- purchased or rejected order) only open when authorised or logged in
+6. use mongodb atlas as database dont use mongoose
+	->use relations -> one to many 
+		          -> Many to one
+		          -> many to many 
+  		          -> one to one
+7. Authentication jwt token expiring in an hour
+8. use middleware for authentication
+9. use custom logics (dont use any libraries) 
+	-> make collection model -> users, products, order, cart, and one more
+10. EJS engine implementation

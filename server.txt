@@ -1,0 +1,73 @@
+// server.js
+const express = require("express");
+const path = require("path");
+const { MongoClient } = require("mongodb");
+const database = require("./config/database");
+
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
+// Set EJS as templating engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Database connection
+const uri =
+  "mongodb+srv://ArshpreetSingh:jY3PyvvQKRr9Us24@e-commweb.vc2jt.mongodb.net/?retryWrites=true&w=majority&appName=e-commWeb";
+let db;
+
+async function connectDB() {
+  try {
+    const dbInstance = await database.connectDb();
+    await database.initializeIndexes(); // Initialize indexes after connection
+    db = dbInstance;
+    console.log("Connected to MongoDB Atlas");
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    process.exit(1);
+  }
+}
+// async function connectDB() {
+//   try {
+//     const client = await MongoClient.connect(uri);
+//     db = client.db("ecommerce");
+//     console.log("Connected to MongoDB Atlas");
+//   } catch (error) {
+//     console.error("Database connection failed:", error);
+//     process.exit(1);
+//   }
+// }
+
+// Make db accessible to routes
+app.use((req, res, next) => {
+  req.db = db;
+  next();
+});
+
+// Basic route for testing
+// app.get("/", (req, res) => {
+//   res.render("home", { title: "Home" });
+// });
+const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const authRoutes = require("./routes/authRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+
+app.use("/auth", authRoutes);
+app.use("/", productRoutes);
+app.use("/", cartRoutes);
+app.use("/", authRoutes);
+app.use("/payment", paymentRoutes);
+app.use("/orders", orderRoutes);
+// Start server
+const PORT = process.env.PORT || 3000;
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+});

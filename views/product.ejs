@@ -1,0 +1,120 @@
+<!-- views/product.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= product.name %> - E-commerce Platform</title>
+    <style>
+      .product-detail {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+      .product-image {
+        width: 100%;
+        height: auto;
+      }
+      .product-info h1 {
+        margin-bottom: 20px;
+      }
+      .product-price {
+        font-size: 2em;
+        color: #2ecc71;
+        margin: 20px 0;
+      }
+      .add-to-cart {
+        padding: 12px 24px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1.1em;
+      }
+      .add-to-cart:hover {
+        background-color: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('partials/header') %>
+
+    <div class="product-detail">
+      <div class="product-image-container">
+        <img
+          src="<%= product.imageUrl %>"
+          alt="<%= product.name %>"
+          class="product-image"
+        />
+      </div>
+      <div class="product-info">
+        <h1><%= product.name %></h1>
+        <p class="product-price">$<%= product.price.toFixed(2) %></p>
+        <p><%= product.description %></p>
+        <p>Stock: <%= product.stock %></p>
+        <button class="add-to-cart" onclick="addToCart('<%= product._id %>')">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+
+    <script>
+          const authMiddleware = (req, res, next) => {
+            // Simulate an authenticated user for testing purposes
+            req.user = {
+              _id: "674602432aa74881da4b5036", // Replace this with a valid user ID from your MongoDB
+            };
+            next();
+          };
+            function addToCart(productId) {
+              // Get existing cart from localStorage or initialize empty cart
+              let cart = JSON.parse(localStorage.getItem("cart")) || [];
+              const productName = "<%= product.name %>";
+          const productPrice = <%= product.price %>;
+              // Check if product already exists in cart
+              const existingItem = cart.find((item) => item.productId === productId);
+
+              if (existingItem) {
+                existingItem.quantity += 1;
+              } else {
+                cart.push({
+                  productId: productId,
+                  name: productName,
+                  price: productPrice,
+                  quantity: 1,
+                });
+              }
+
+              // Save updated cart back to localStorage
+              localStorage.setItem("cart", JSON.stringify(cart));
+
+              fetch("/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: productId,
+            quantity: 1,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to add item to database cart");
+            }
+            alert("Product added to cart!");
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("Product added to local cart.");
+          });
+      }
+    </script>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
