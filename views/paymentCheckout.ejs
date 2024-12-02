@@ -121,7 +121,7 @@
             <% if (order && order.items && order.items.length > 0) { %> <%
             order.items.forEach(item => { %>
             <tr>
-              <td><%= item.productDetails.pname %></td>
+              <td><%= item.productDetails.name %></td>
               <td><%= item.quantity %></td>
               <td>$<%= item.price.toFixed(2) %></td>
               <td>$<%= item.subtotal.toFixed(2) %></td>
@@ -142,9 +142,7 @@
 
       <div class="payment-form">
         <h2>Payment Information</h2>
-        <form action="/payment/process" method="POST">
-          <input type="hidden" name="orderId" value="<%= order._id %>" />
-
+        <form action="/orders/process" method="POST">
           <div class="form-group">
             <label for="cardName">Name on Card</label>
             <input type="text" id="cardName" name="cardName" required />

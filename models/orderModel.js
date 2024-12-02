@@ -108,13 +108,18 @@ class OrderModel {
         typeof orderId === "string"
           ? database.generateObjectId(orderId)
           : orderId;
-      
+
+      console.log("Fetching order with ID:", orderObjectId);
+
       // Fetch the specific order
       const order = await this.collection.findOne({ _id: orderObjectId });
 
       if (!order) {
+        console.log("Order not found");
         return null;
       }
+
+      console.log("Order found:", order);
 
       // Populate product details for each item
       const enrichedOrder = {
@@ -124,6 +129,7 @@ class OrderModel {
             const product = await this.productCollection.findOne({
               _id: item.productId,
             });
+            console.log("Product details:", product); // Log each product fetched
             return {
               ...item,
               productDetails: product,
@@ -132,6 +138,7 @@ class OrderModel {
         ),
       };
 
+      console.log("Enriched Order:", enrichedOrder);
       return enrichedOrder;
     } catch (error) {
       console.error("Error fetching order details:", error);

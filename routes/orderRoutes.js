@@ -63,7 +63,7 @@ router.get("/:orderId", authMiddleware, async (req, res) => {
 
     // Fetch order details from the database
     // console.log(orderId);
-    const order = await OrderModel.getUserOrderHistory(orderId);
+    const order = await OrderModel.getOrderDetails(orderId);
     console.log(order);
 
     if (!order) {
@@ -79,12 +79,27 @@ router.get("/:orderId", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/confirmOrder", (req, res) => {
-  // You might want to pass order details from a session or database
-  res.render("orderConfirmation", {
-    orderNumber: Math.floor(Math.random() * 1000000),
-    orderDate: new Date().toLocaleDateString(),
-  });
+router.get("/process", async (req, res) => {
+  const orderId = req.params.orderId; // Assuming orderId is passed as a query parameter
+  console.log("The order id for confirmation page is->" + orderId);
+
+  if (!orderId) {
+    return res.status(400).json({ error: "Order ID is required" });
+  }
+
+  try {
+    // Fetch the order details
+    const order = await OrderModel.getUserOrderHistory(orderId);
+    
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Render the orderConfirmation view with the order details
+    res.render("orderConfirmation", { order });
+  } catch (error) {
+    res.render("orderConfirmation");
+  }
 });
 
 module.exports = router;
